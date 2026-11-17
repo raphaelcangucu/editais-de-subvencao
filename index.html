@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Editais de subvenção para startups · 17/11/2026</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --ink: #1c1915;
+      --muted: #5c564c;
+      --line: #d9d2c5;
+      --card: #fffdf8;
+      --warn: #8a4b12;
+      --warn-bg: #f3e2cf;
+      --danger: #8d2b2b;
+      --ok: #1f5c45;
+      --accent: #1f4d3a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font: 16px/1.45 "Avenir Next", "Segoe UI", sans-serif;
+    }
+    main { max-width: 1180px; margin: 0 auto; padding: 28px 20px 64px; }
+    h1 {
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 34px;
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      margin: 0 0 8px;
+    }
+    h2 {
+      font-family: "Iowan Old Style", Palatino, Georgia, serif;
+      font-size: 22px;
+      margin: 28px 0 10px;
+    }
+    p { margin: 0; }
+    .lede { color: var(--muted); max-width: 68ch; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 22px 0;
+    }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+    }
+    .stat b { display: block; font-size: 28px; letter-spacing: -0.04em; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    .stat.warn b { color: var(--warn); }
+    .stat.danger b { color: var(--danger); }
+    .callout {
+      background: var(--warn-bg);
+      border: 1px solid #e2c7a4;
+      padding: 14px 16px;
+    }
+    .callout strong { display: block; margin-bottom: 4px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+    button, input {
+      font: inherit;
+      color: inherit;
+      background: var(--card);
+      border: 1px solid var(--line);
+      padding: 7px 12px;
+    }
+    button[aria-pressed="true"] {
+      background: var(--accent);
+      color: #f7f4ee;
+      border-color: var(--accent);
+    }
+    input { min-width: min(100%, 320px); }
+    .chart { display: grid; gap: 7px; margin-top: 8px; }
+    .bar-row { display: grid; grid-template-columns: minmax(180px, 340px) 1fr auto; gap: 10px; align-items: center; }
+    .bar-label { font-size: 13px; }
+    .track { background: #e7e1d6; height: 10px; }
+    .fill { background: var(--warn); height: 10px; }
+    .fill.far { background: var(--accent); }
+    .days { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--muted); width: 64px; text-align: right; }
+    .caption { color: var(--muted); font-size: 13px; margin-top: 8px; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); font-size: 14px; }
+    th, td { border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; padding: 10px 8px; }
+    th { font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+    tr.soon td:first-child { box-shadow: inset 3px 0 0 var(--danger); }
+    tr.near td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+    a { color: var(--accent); }
+    select { font: inherit; padding: 4px 6px; background: var(--bg); border: 1px solid var(--line); }
+    .notes { width: 100%; min-height: 110px; padding: 12px; background: var(--card); }
+    .aside { color: var(--muted); max-width: 78ch; }
+    @media (max-width: 800px) {
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .bar-row { grid-template-columns: 1fr; gap: 4px; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Editais de subvenção para startups</h1>
+    <p class="lede">Abertos em 17/11/2026. Federal, estadual e municipal. A inscrição vale o texto do edital, não este painel.</p>
+    <section class="stats" id="stats"></section>
+    <div class="callout">
+      <strong>Sete janelas fecham até 30/11</strong>
+      FACEPE Pró-Startups e Finep EUREKA encerram em 23/11. Sabesp São José dos Campos em 24/11. Semicondutores em 25/11. Desafios.Gov, BNDES Garagem e Transformação Mineral em 30/11. O único municipal deste recorte é a Sabesp. Smart Factory ficou de fora: o Atlas citava 23/11 e o Meu Fomento citava 26/02/2027.
+    </div>
+    <h2>Dias até o fim das inscrições</h2>
+    <div class="chart" id="chart"></div>
+    <p class="caption">Eixo da esquerda: edital com data de encerramento. Barra: dias restantes contados de 17/11/2026. Fluxo contínuo fica de fora deste gráfico. Fonte: Atlas do Fomento (página de 17/11 e CSV verificado em 09/11), página da Finep da Transformação Mineral e lista de chamadas da FAPESP.</p>
+    <h2>Fila para decidir</h2>
+    <div class="filters" id="esfera"></div>
+    <div class="filters" id="janela"></div>
+    <input id="busca" type="search" placeholder="Buscar por edital, órgão ou UF" />
+    <div style="overflow-x:auto; margin-top:12px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Prazo</th><th>Edital</th><th>Esfera</th><th>Instrumento</th><th>Recurso</th><th>Quem entra</th><th>Gestão</th><th>Fonte</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p class="caption" id="count"></p>
+    <h2>Notas da leva</h2>
+    <textarea class="notes" id="notas" placeholder="Quem se candidata, qual tese encaixa, o que falta de documento."></textarea>
+    <h2>Ficou de fora de propósito</h2>
+    <p class="aside">Pró-Amazônia Empreende seleciona agência de fomento, não startup. COOPERAMAIS Tecnologia seleciona ICT. Bolsas FACEPE, FAPEMIG e FAPES são de pesquisador. CPSIs de Florianópolis, Teresina e CAU-SP são compra pública. Centelha RJ já passou da fase de inscrição. A chamada Embrapii/Petrobras de economia circular apareceu sem prazo confirmado.</p>
+  </main>
+  <script>
+    const EDITAIS = [
+      { id: "facepe-33", nome: "FACEPE 33/2026 Pró-Startups Operação", orgao: "FACEPE", esfera: "Estadual", uf: "PE", instrumento: "A classificar", prazo: "23/11/2026", dias: 6, recurso: "Não informado no catálogo", quem: "Empresas", url: "https://www2.facepe.br/wp-content/uploads/2026/10/2026.10.22-Pro-Startups-Operacao-Atualizado.pdf", nota: "Prazo no Atlas do Fomento. O instrumento não veio classificado como subvenção." },
+      { id: "finep-eureka", nome: "Finep EUREKA Brasil–Suécia: mineração, bioeconomia ou cidades sustentáveis", orgao: "Finep / MCTI", esfera: "Federal", uf: "BR", instrumento: "Subvenção", prazo: "23/11/2026", dias: 6, recurso: "Não informado no catálogo", quem: "Empresas", url: "https://www.finep.gov.br/e/chamada-publica/222684/1132029", nota: "Fase nacional. Conferir o regulamento antes de enquadrar o projeto." },
+      { id: "sabesp-pit", nome: "Inovação Aberta Sabesp, ciclo 2", orgao: "PIT São José dos Campos", esfera: "Municipal", uf: "SP", instrumento: "Inovação aberta", prazo: "24/11/2026", dias: 7, recurso: "Não informado no catálogo", quem: "Público não classificado", url: "https://pitsjc.org.br/sabesp/", nota: "Único edital municipal com prazo futuro no recorte de inovação do Atlas." },
+      { id: "finep-semi", nome: "Finep Mais Inovação, rodada 2, Semicondutores", orgao: "Finep / MCTI", esfera: "Federal", uf: "BR", instrumento: "Subvenção", prazo: "25/11/2026", dias: 8, recurso: "R$ 100 mi na chamada", quem: "Empresas", url: "https://www.finep.gov.br/e/chamada-publica/222684/755605", nota: "Valor da chamada no Atlas, verificado em 09/11/2026. Não é teto por projeto." },
+      { id: "facepe-32", nome: "FACEPE 32/2026 Desafios.Gov", orgao: "FACEPE", esfera: "Estadual", uf: "PE", instrumento: "A classificar", prazo: "30/11/2026", dias: 13, recurso: "Não informado no catálogo", quem: "Empresas", url: "https://www2.facepe.br/wp-content/uploads/2026/10/2026.10.22-DesafiosGov-Atualizado.pdf", nota: "Desafio de governo. O Atlas não classificou o instrumento." },
+      { id: "bndes-garagem", nome: "BNDES Garagem 2026, ciclo 3", orgao: "BNDES / Quintessa", esfera: "Federal", uf: "BR", instrumento: "Aceleração", prazo: "30/11/2026", dias: 13, recurso: "Até R$ 1 mi em premiações", quem: "Startups de impacto", url: "https://garagem.bndes.gov.br/inscreva-se/", nota: "Não é subvenção não reembolsável. Inscrição até 23h59 de 30/11/2026." },
+      { id: "finep-mineral", nome: "Finep Mais Inovação, rodada 2, Transformação Mineral", orgao: "Finep / MCTI", esfera: "Federal", uf: "BR", instrumento: "Subvenção", prazo: "30/11/2026, 18h", dias: 13, recurso: "R$ 500 mi na chamada", quem: "Empresas com parceria de ICT", url: "https://www.finep.gov.br/e/chamada-publica/222684/754473", nota: "Página da Finep lida em 17/11/2026. Minerais críticos e transição energética." },
+      { id: "fapemig-hub", nome: "FAPEMIG SEDE 018/2026 HUBMG GOV", orgao: "FAPEMIG e SEDE-MG", esfera: "Estadual", uf: "MG", instrumento: "Auxílio à inovação", prazo: "09/12/2026", dias: 22, recurso: "R$ 20 mi na chamada; até R$ 2 mi por projeto", quem: "Empresas, startups e ICTs de MG", url: "https://fapemig.br/oportunidades/chamadas-e-editais/chamada-fapemig-sede-018-2026-hubmg-gov-resolucao-de-desafios-publicos-por-meio-de-inovacao-aberta", nota: "Contrapartida de 10%. Manifestação de interesse do órgão até 27/11/2026." },
+      { id: "amabio", nome: "Banco da Amazônia, Amabio 002/2026", orgao: "Banco da Amazônia", esfera: "Federal", uf: "Norte", instrumento: "Subvenção", prazo: "18/12/2026", dias: 31, recurso: "Até R$ 300 mil", quem: "Empresas, startups e OSCs", url: "https://capitaai.com.br/editais-abertos/para-startup", nota: "Prazo e valor nos agregadores Capitaai e Meu Fomento em 17/11. Fora do CSV do Atlas de 09/11." },
+      { id: "pipe-jornada-2", nome: "PIPE Jornada Tecnológica, 2ª rodada 2026, fase 1", orgao: "FAPESP", esfera: "Estadual", uf: "SP", instrumento: "Subvenção", prazo: "26/01/2027", dias: 70, recurso: "R$ 50 mi na chamada", quem: "Pequenas empresas de SP", url: "https://fapesp.br/chamadas/", nota: "Pré-proposta até 26/01/2027. Chamada FAPESP 59/2026, projetos de 12 meses." },
+      { id: "cemig-tec", nome: "Inova Cemig Tec 3.0, ciclo 02", orgao: "Cemig", esfera: "Estadual", uf: "MG", instrumento: "Inovação aberta", prazo: "31/01/2027", dias: 75, recurso: "Não informado no catálogo", quem: "Empresas", url: "https://inova.cemig.com.br/chamadas-publicas/inova-cemig-tec-ciclo-02/", nota: "Chamada de empresa de energia, não subvenção de fundação estadual." },
+      { id: "cooperamais", nome: "Finep COOPERAMAIS Brasil Tecnologias, empresas", orgao: "Finep / MCTI", esfera: "Federal", uf: "BR", instrumento: "Subvenção", prazo: "30/04/2027", dias: 164, recurso: "R$ 120 mi no Atlas", quem: "Empresas", url: "https://www.finep.gov.br/e/chamada-publica/222684/1060720", nota: "Agroindústria e segurança alimentar. O Capitaai cita R$ 20 mi; o Atlas, R$ 120 mi." },
+      { id: "fapesc-65", nome: "FAPESC 65/2025, subvenção Horizonte Europa", orgao: "FAPESC", esfera: "Estadual", uf: "SC", instrumento: "Subvenção", prazo: "30/06/2028", dias: 591, recurso: "Até R$ 700 mil", quem: "Empresas", url: "https://fapesc.sc.gov.br/edital-suplementar-de-subvencao-economica-fapesc-n-o-65-2025-programa-horizonte-europa-2026-2027/", nota: "Suplemento para quem entra no Horizonte Europa. Teto citado pelo Meu Fomento." },
+      { id: "pipe-1", nome: "PIPE fase 1", orgao: "FAPESP", esfera: "Estadual", uf: "SP", instrumento: "Subvenção", prazo: "Fluxo contínuo", dias: null, recurso: "Conforme a fase", quem: "Pequenas empresas de SP", url: "https://fapesp.br/pipe/", nota: "Janela permanente. O valor sai da norma do PIPE, não de uma chamada datada." },
+      { id: "pipe-2", nome: "PIPE fase 2 indireta", orgao: "FAPESP", esfera: "Estadual", uf: "SP", instrumento: "Subvenção", prazo: "Fluxo contínuo", dias: null, recurso: "Conforme a fase", quem: "Pequenas empresas de SP", url: "https://fapesp.br/pipe/", nota: "Continuidade da fase 1. Inscrição no fluxo do PIPE." },
+      { id: "pipe-invest", nome: "PIPE Invest", orgao: "FAPESP", esfera: "Estadual", uf: "SP", instrumento: "Subvenção", prazo: "Fluxo contínuo", dias: null, recurso: "Conforme a fase", quem: "Pequenas empresas de SP", url: "https://fapesp.br/pipe/152", nota: "Linha de investimento do PIPE, em fluxo contínuo." },
+      { id: "embrapii-sebrae", nome: "EMBRAPII / Sebrae, pequenos negócios e startups", orgao: "EMBRAPII e Sebrae", esfera: "Federal", uf: "BR", instrumento: "Subvenção", prazo: "Fluxo contínuo", dias: null, recurso: "Conforme a unidade", quem: "Pequenos negócios e startups", url: "https://embrapii.org.br/sebrae/", nota: "Parceria permanente. O aporte depende da unidade EMBRAPII." }
+    ];
+
+    const state = JSON.parse(localStorage.getItem("editais-painel") || "{}");
+    state.status = state.status || {};
+    state.esfera = state.esfera || "Todas";
+    state.janela = state.janela || "todas";
+    state.busca = state.busca || "";
+    state.notas = state.notas || "";
+    const save = () => localStorage.setItem("editais-painel", JSON.stringify(state));
+
+    const fechando = EDITAIS.filter((e) => e.dias !== null && e.dias <= 14).length;
+    const count = (esfera) => EDITAIS.filter((e) => e.esfera === esfera).length;
+    document.getElementById("stats").innerHTML = [
+      [EDITAIS.length, "Na fila de gestão", ""],
+      [fechando, "Fecham em 14 dias", "warn"],
+      [count("Federal"), "Federais", ""],
+      [count("Estadual"), "Estaduais", ""],
+      [count("Municipal"), "Municipal", "danger"]
+    ].map(([value, label, tone]) => `<div class="stat ${tone}"><b>${value}</b><span>${label}</span></div>`).join("");
+
+    const dated = EDITAIS.filter((e) => e.dias !== null).sort((a, b) => a.dias - b.dias);
+    const max = Math.max(...dated.map((e) => e.dias));
+    document.getElementById("chart").innerHTML = dated.map((e) => {
+      const width = Math.max(2, Math.round((e.dias / max) * 100));
+      return `<div class="bar-row"><div class="bar-label">${e.nome}</div><div class="track"><div class="fill ${e.dias > 30 ? "far" : ""}" style="width:${width}%"></div></div><div class="days">${e.dias} dias</div></div>`;
+    }).join("");
+
+    function chip(container, items, key) {
+      const root = document.getElementById(container);
+      root.innerHTML = items.map(([id, label]) => `<button type="button" data-id="${id}" aria-pressed="${state[key] === id}">${label}</button>`).join("");
+      root.onclick = (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+        state[key] = button.dataset.id;
+        save();
+        paint();
+      };
+    }
+
+    function paint() {
+      chip("esfera", [["Todas", "Todas"], ["Federal", "Federal"], ["Estadual", "Estadual"], ["Municipal", "Municipal"]], "esfera");
+      chip("janela", [["todas", "Todos os prazos"], ["14", "Fecha em 14 dias"], ["90", "Fecha em 90 dias"], ["fluxo", "Fluxo contínuo"]], "janela");
+      const busca = document.getElementById("busca");
+      busca.value = state.busca;
+      const termo = state.busca.trim().toLowerCase();
+      const rows = EDITAIS.filter((e) => {
+        if (state.esfera !== "Todas" && e.esfera !== state.esfera) return false;
+        if (state.janela === "fluxo" && e.dias !== null) return false;
+        if (state.janela === "14" && (e.dias === null || e.dias > 14)) return false;
+        if (state.janela === "90" && (e.dias === null || e.dias > 90)) return false;
+        if (!termo) return true;
+        return `${e.nome} ${e.orgao} ${e.uf} ${e.instrumento}`.toLowerCase().includes(termo);
+      });
+      document.getElementById("rows").innerHTML = rows.map((e) => {
+        const status = state.status[e.id] || "a-ver";
+        const klass = e.dias !== null && e.dias <= 7 ? "soon" : e.dias !== null && e.dias <= 14 ? "near" : "";
+        const prazo = e.dias === null ? e.prazo : `${e.prazo} · ${e.dias}d`;
+        return `<tr class="${klass}"><td>${prazo}</td><td>${e.nome}<br><span class="caption">${e.nota}</span></td><td>${e.esfera} · ${e.uf}</td><td>${e.instrumento}</td><td>${e.recurso}</td><td>${e.quem}</td><td><select data-id="${e.id}">${[["a-ver","A ver"],["prioridade","Prioridade"],["preparando","Preparando"],["descartado","Descartado"]].map(([v,l]) => `<option value="${v}" ${v===status?"selected":""}>${l}</option>`).join("")}</select></td><td><a href="${e.url}" target="_blank" rel="noreferrer">Abrir</a></td></tr>`;
+      }).join("") || `<tr><td colspan="8">Nenhum edital neste filtro.</td></tr>`;
+      document.getElementById("count").textContent = `${rows.length} de ${EDITAIS.length} nesta vista. A situação de gestão fica salva neste navegador.`;
+    }
+
+    document.getElementById("busca").addEventListener("input", (event) => {
+      state.busca = event.target.value;
+      save();
+      paint();
+    });
+    document.getElementById("rows").addEventListener("change", (event) => {
+      const select = event.target.closest("select");
+      if (!select) return;
+      state.status[select.dataset.id] = select.value;
+      save();
+    });
+    const notas = document.getElementById("notas");
+    notas.value = state.notas;
+    notas.addEventListener("input", () => {
+      state.notas = notas.value;
+      save();
+    });
+    paint();
+  </script>
+</body>
+</html>
